@@ -8,6 +8,25 @@ import {
   Video,
 } from "lucide-react";
 
+const steps = [
+  {
+    title: "1. Content Your Content",
+    description:
+      "Share your Youtube video URL and let your AI agent get to work.",
+    icon: Video,
+  },
+  {
+    title: "2. AI Agent Analysis",
+    description: "Your personal agent analyzes every aspect of your content.",
+    icon: Brain,
+  },
+  {
+    title: "3. Recieve Intelligence",
+    description:
+      "Get actionable insights and strategic recommendations to enhance your content.",
+    icon: MessageSquare,
+  },
+];
 const features = [
   {
     title: "AI Analysis",
@@ -90,22 +109,22 @@ export default function Home() {
 
           {/* festures cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-0">
-            {features.map((features, index) => {
-              const Icon = features.icon;
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
               return (
                 <div
                   key={index}
                   className="bg-white p-6 rounded-xl border border-gray-200 hover:border-blue-500 transition-all duration-300"
                 >
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center ${features.iconBg} mb-4`}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center ${feature.iconBg} mb-4`}
                   >
-                    <Icon className={`w-6 h-6 ${features.iconColor}`} />
+                    <Icon className={`w-6 h-6 ${feature.iconColor}`} />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">
-                    {features.title}
+                    {feature.title}
                   </h3>
-                  <p className="text-gray-600">{features.description}</p>
+                  <p className="text-gray-600">{feature.description}</p>
                 </div>
               );
             })}
@@ -114,6 +133,34 @@ export default function Home() {
       </section>
 
       {/* how it works section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 max-w-6xl ">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Meet Your AI Agent in 3 Simple Steps
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div
+                  key={index}
+                  className="bg-white p-6 rounded-xl  drop-shadow-lg hover:shadow-lg transition-all"
+                >
+                  <div className="w-16 h-16  bg-gradient-to-r from-blue-600 to-blue-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 text-center">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 text-center">
+                    {step.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
       {/* footer */}
     </div>
   );
