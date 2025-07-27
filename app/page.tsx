@@ -161,7 +161,20 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* footer */}
+      {/* footer section */}
+      <section className="relative bg-gradient-to-r from-blue-600 to-blue-400 py-20">
+        <div className="text-center">
+          <h2 className="text-3xl text-white font-bold mb-6">
+            Ready To Meet Your AI Content Agent?
+          </h2>
+          <p className="text-xl text-blue-50 mb-8">
+            Join creators leveraging AI to unlock content insights
+          </p>
+        </div>
+        <p className="absolute bottom-0 right-1 left-1 justify-center text-sm font-bold text-black text-center">
+          &copy; {new Date().getFullYear()} Agentive. All rights reserved.
+        </p>
+      </section>
     </div>
   );
 }
