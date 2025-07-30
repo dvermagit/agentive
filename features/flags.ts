@@ -3,7 +3,7 @@ export enum FeatureFlag {
   IMAGE_GENERATION = "image-generation",
   SCRIPT_GENERATION = "script-generation",
   ANALYSE_VIDEO = "analyse-video",
-  TITLE_GENERATION = "title-generation",
+  TITLE_GENERATION = "title-generations",
 }
 
 export const featureFlagEvents: Record<FeatureFlag, { event: string }> = {
