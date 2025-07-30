@@ -1,5 +1,6 @@
 "use client";
 import ThumbnailGeneration from "@/components/ThumbnailGeneration";
+import TitleGeneration from "@/components/TitleGeneration";
 import Usage from "@/components/Usage";
 import YoutubeVideoDetails from "@/components/YoutubeVideoDetails";
 import { FeatureFlag } from "@/features/flags";
@@ -28,6 +29,7 @@ function AnalysisPage() {
           {/* Thumbnail Generations */}
           <ThumbnailGeneration videoId={videoId} />
           {/* Titles Generation */}
+          <TitleGeneration videoId={videoId} />
           {/* Transcription Generation */}
         </div>
         {/* Right side */}

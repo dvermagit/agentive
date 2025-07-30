@@ -1,3 +1,4 @@
+"use client";
 import { useUser } from "@clerk/nextjs";
 import Usage from "./Usage";
 import { FeatureFlag } from "@/features/flags";
