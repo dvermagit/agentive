@@ -19,7 +19,7 @@ function YoutubeVideoDetails({ videoId }: { videoId: string }) {
   if (!video)
     return (
       <div className="flex justify-center items-center p-4">
-        <div className="w-8 h-8 border-t-2 border-blue-900 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-t-blue-500 border-4  border-gray-300 rounded-full animate-spin"></div>
       </div>
     );
 
