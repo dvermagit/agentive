@@ -7,8 +7,9 @@ import { Copy } from "lucide-react";
 
 function TitleGeneration({ videoId }: { videoId: string }) {
   const { user } = useUser();
-  const titles = [];
+  const titles: { title: string; _id: string }[] = [];
 
+  console.log(user, titles, videoId);
   const { value: isTitleGenerationEnabled } = useSchematicEntitlement(
     FeatureFlag.TITLE_GENERATION
   );
