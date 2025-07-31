@@ -1,5 +1,4 @@
 "use client";
-import { ClerkProvider } from "@clerk/nextjs";
 import { SchematicProvider } from "@schematichq/schematic-react";
 import SchematicWrapped from "./SchematicWrapped";
 import { ConvexClientProvider } from "./ConvexClientProvider";
