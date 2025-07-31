@@ -3,11 +3,17 @@ import { useUser } from "@clerk/nextjs";
 import Usage from "./Usage";
 import { FeatureFlag } from "@/features/flags";
 import Image from "next/image";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 function ThumbnailGeneration({ videoId }: { videoId: string }) {
   const { user } = useUser();
 
-  const images = [];
+  const images = useQuery(api.images.getImages, {
+    videoId,
+    userId: user?.id ?? "",
+  });
+
   return (
     <div className="rounded-xl flex flex-col p-4 border">
       <div className="min-w-52">
@@ -18,8 +24,8 @@ function ThumbnailGeneration({ videoId }: { videoId: string }) {
       </div>
 
       {/* Simple horizontal scroll for images */}
-      <div className={`flex overflow-x-auto gap-4 ${images.length && "mt-4"}`}>
-        {images.map(
+      <div className={`flex overflow-x-auto gap-4 ${images?.length && "mt-4"}`}>
+        {images?.map(
           (image) =>
             image.url && (
               <div
