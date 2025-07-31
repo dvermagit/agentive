@@ -5,12 +5,18 @@ import { useSchematicEntitlement } from "@schematichq/schematic-react";
 import { useState } from "react";
 import Usage from "./Usage";
 
+interface TranscriptEntry {
+  text: string;
+  timestamp: string;
+}
+
 function TranscriptionGeneration({ videoId }: { videoId: string }) {
-  const [transcript, setTranscript] = useState<{
+  const [transcript] = useState<{
     transcript: TranscriptEntry[];
     cache: string;
   } | null>(null);
 
+  console.log(videoId);
   const { featureUsageExceeded } = useSchematicEntitlement(
     FeatureFlag.TRANSCRIPTION
   );
