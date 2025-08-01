@@ -18,7 +18,7 @@ export async function getVideoDetails(videoId: string) {
 
     const videoDetails = videoResponse.data.items?.[0];
 
-    console.log("✅ Video details:", videoDetails);
+    console.log("✅ Video details");
 
     if (!videoDetails) {
       throw new Error("Video not found");
@@ -33,7 +33,7 @@ export async function getVideoDetails(videoId: string) {
 
     const channelDetails = channelResponse.data.items?.[0];
 
-    console.log("✅ Video details:", channelDetails);
+    console.log("✅ Video details");
 
     const video: VideoDetails = {
       title: videoDetails.snippet?.title || "Unkown Title",
