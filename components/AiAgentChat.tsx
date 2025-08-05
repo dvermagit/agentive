@@ -2,14 +2,20 @@
 
 import { useChat } from "ai/react";
 import { Button } from "./ui/button";
-
+import ReactMarkdown from "react-markdown";
 function AiAgentChat({ videoId }: { videoId: string }) {
   const { messages, handleSubmit, handleInputChange, input } = useChat({
     // api: "/api/chat",
     maxSteps: 5,
     body: {
-      videoId,
+      videoId: videoId,
     },
+    // onError: (error) => {
+    //   console.error("Frontend chat error:", error);
+    // },
+    // onResponse: (response) => {
+    //   console.log("Chat response received:", response);
+    // },
   });
   return (
     <div className="flex flex-col h-full">
@@ -35,7 +41,9 @@ function AiAgentChat({ videoId }: { videoId: string }) {
 
           {messages.map((m) => (
             <div key={m.id}>
-              <p>{m.content}</p>
+              <div className="prose prose-sm max-w-none">
+                <ReactMarkdown>{m.content}</ReactMarkdown>
+              </div>
             </div>
           ))}
         </div>
