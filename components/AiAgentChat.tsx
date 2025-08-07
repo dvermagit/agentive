@@ -40,9 +40,26 @@ function AiAgentChat({ videoId }: { videoId: string }) {
           )}
 
           {messages.map((m) => (
-            <div key={m.id}>
-              <div className="prose prose-sm max-w-none">
-                <ReactMarkdown>{m.content}</ReactMarkdown>
+            <div
+              key={m.id}
+              className={`flex ${m.role === "user" ? "justify-end" : "justify-start "}`}
+            >
+              <div
+                className={`max-w-[85%] ${m.role === "user" ? "bg-blue-500" : "bg-gray-100"} rounded-2xl px-4 py-3`}
+              >
+                {m.parts && m.role == "assistant" ? (
+                  //AI Agent Message
+                  <div>
+                    <div className="prose prose-sm max-w-none">
+                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                    </div>
+                  </div>
+                ) : (
+                  //User Message
+                  <div className="prose prose-sm max-w-none text-white">
+                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                  </div>
+                )}
               </div>
             </div>
           ))}
