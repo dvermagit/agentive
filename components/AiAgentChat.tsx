@@ -3,6 +3,22 @@
 import { useChat } from "ai/react";
 import { Button } from "./ui/button";
 import ReactMarkdown from "react-markdown";
+
+interface ToolInvocation {
+  toolCallId: string;
+  toolName: string;
+  result?: Record<string, unknown>;
+}
+
+interface ToolPart {
+  type: "tool-invocation";
+  toolInvocation: ToolInvocation;
+}
+
+const formatToolInvocation = (part: ToolPart) => {
+  if (!part.toolInvocation) return "Unknown Tool";
+  return `🔧 Tool Used: ${part.toolInvocation.toolName}`;
+};
 function AiAgentChat({ videoId }: { videoId: string }) {
   const { messages, handleSubmit, handleInputChange, input } = useChat({
     // api: "/api/chat",
@@ -49,10 +65,32 @@ function AiAgentChat({ videoId }: { videoId: string }) {
               >
                 {m.parts && m.role == "assistant" ? (
                   //AI Agent Message
-                  <div>
-                    <div className="prose prose-sm max-w-none">
-                      <ReactMarkdown>{m.content}</ReactMarkdown>
-                    </div>
+                  <div className="space-y-3 ">
+                    {m.parts.map((part, i) =>
+                      part.type === "text" ? (
+                        <div key={i} className="prose prose-sm max-w-none">
+                          <ReactMarkdown>{m.content}</ReactMarkdown>
+                        </div>
+                      ) : part.type === "tool-invocation" ? (
+                        <div
+                          key={i}
+                          className="bg-white/50 rounded-lg p-2 space-y-2 text-gray-800"
+                        >
+                          <div className="font-medium text-xs">
+                            {formatToolInvocation(part as ToolPart)}
+                          </div>
+                          {(part as ToolPart).toolInvocation.result && (
+                            <pre className="text-xs bg-white/75 p-2 rounded max-h-40 overflow-auto ">
+                              {JSON.stringify(
+                                (part as ToolPart).toolInvocation.result,
+                                null,
+                                2
+                              )}
+                            </pre>
+                          )}
+                        </div>
+                      ) : null
+                    )}
                   </div>
                 ) : (
                   //User Message
