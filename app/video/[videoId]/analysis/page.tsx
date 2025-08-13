@@ -1,17 +1,38 @@
 "use client";
+import { createOrGetVideo } from "@/actions/createOrGetVideo";
 import AiAgentChat from "@/components/AiAgentChat";
 import ThumbnailGeneration from "@/components/ThumbnailGeneration";
 import TitleGeneration from "@/components/TitleGeneration";
 import TranscriptionGeneration from "@/components/TranscriptionGeneration";
 import Usage from "@/components/Usage";
 import YoutubeVideoDetails from "@/components/YoutubeVideoDetails";
+import { Doc } from "@/convex/_generated/dataModel";
 import { FeatureFlag } from "@/features/flags";
+import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 function AnalysisPage() {
   const params = useParams<{ videoId: string }>();
   const { videoId } = params;
+  const { user } = useUser();
+  const [videos, setVideos] = useState<Doc<"videos"> | null | undefined>(
+    undefined
+  );
 
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const fetchVideo = async () => {
+      //Analyse the video (add video to db here)
+      const response = await createOrGetVideo(videoId as string, user.id);
+      if (!response.success) {
+      } else {
+        setVideos(response.data);
+      }
+    };
+    fetchVideo();
+  }, [videoId, user]);
   return (
     <div className="xl:container mx-auto px-4 md:px-0 ">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
