@@ -74,7 +74,7 @@ export const createOrGetVideo = async (
 
       return {
         success: true,
-        data: video!,
+        data: newVideo!,
       };
     } else {
       console.log("Video exits - no token needs to be spent");
