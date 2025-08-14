@@ -1,3 +1,4 @@
+"use server";
 import { api } from "@/convex/_generated/api";
 import { FeatureFlag, featureFlagEvents } from "@/features/flags";
 import { client } from "@/lib/schematic";
@@ -59,7 +60,7 @@ export async function getYoutubeTranscript(videoId: string) {
     return {
       cache:
         "The video has already been transcribed - Accessing cached transcript instead of using a token",
-      transcript: existingTranscript,
+      transcript: existingTranscript.transcript,
     };
   }
 
