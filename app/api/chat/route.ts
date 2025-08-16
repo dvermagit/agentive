@@ -8,7 +8,7 @@ import fetchTranscript from "@/tools/fetchTranscript";
 
 dotenv.config();
 
-const model = google("gemini-2.0-flash-lite");
+const model = google("gemini-1.5-flash-latest");
 export async function POST(req: Request) {
   const { messages, videoId } = await req.json();
   const user = await currentUser();
