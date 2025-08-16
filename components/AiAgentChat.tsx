@@ -1,9 +1,11 @@
 "use client";
 
-import { useChat } from "ai/react";
+import { Message, useChat } from "ai/react";
 import { Button } from "./ui/button";
 import ReactMarkdown from "react-markdown";
-
+import { useSchematicFlag } from "@schematichq/schematic-react";
+import { FeatureFlag } from "@/features/flags";
+import { ImageIcon, LetterText, PenIcon } from "lucide-react";
 interface ToolInvocation {
   toolCallId: string;
   toolName: string;
@@ -20,19 +22,65 @@ const formatToolInvocation = (part: ToolPart) => {
   return `🔧 Tool Used: ${part.toolInvocation.toolName}`;
 };
 function AiAgentChat({ videoId }: { videoId: string }) {
-  const { messages, handleSubmit, handleInputChange, input } = useChat({
-    // api: "/api/chat",
-    maxSteps: 5,
-    body: {
-      videoId: videoId,
-    },
-    // onError: (error) => {
-    //   console.error("Frontend chat error:", error);
-    // },
-    // onResponse: (response) => {
-    //   console.log("Chat response received:", response);
-    // },
-  });
+  const { messages, handleSubmit, handleInputChange, input, append, status } =
+    useChat({
+      // api: "/api/chat",
+      maxSteps: 5,
+      body: {
+        videoId: videoId,
+      },
+      // onError: (error) => {
+      //   console.error("Frontend chat error:", error);
+      // },
+      // onResponse: (response) => {
+      //   console.log("Chat response received:", response);
+      // },
+    });
+
+  const isScriptGenerationEnabled = useSchematicFlag(
+    FeatureFlag.SCRIPT_GENERATION
+  );
+  const isImageGenerationEnabled = useSchematicFlag(
+    FeatureFlag.IMAGE_GENERATION
+  );
+  const isTitleGenerationEnabled = useSchematicFlag(
+    FeatureFlag.TITLE_GENERATION
+  );
+  const isVideoAnalysisEnabled = useSchematicFlag(FeatureFlag.ANALYSE_VIDEO);
+
+  const generateScript = async () => {
+    const randomId = Math.random().toString(36).substring(2, 9);
+
+    const userMessage: Message = {
+      id: `generate-script-${randomId}`,
+      role: "user",
+      content:
+        "Generate a step-by-step shooting script for this video that i can use on my own channel to produce a video that is similar to this one, dont do any other steps such as generating a image, just the generate the script only.",
+    };
+    append(userMessage);
+  };
+
+  const generateImage = async () => {
+    const randomId = Math.random().toString(36).substring(2, 15);
+
+    const userMessage: Message = {
+      id: `generate-image-${randomId}`,
+      role: "user",
+      content: "Generate a thumbnail  for this video",
+    };
+    append(userMessage);
+  };
+
+  const generateTitle = async () => {
+    const randomId = Math.random().toString(36).substring(2, 15);
+
+    const userMessage: Message = {
+      id: `generate-title-${randomId}`,
+      role: "user",
+      content: "Generate a title for this video",
+    };
+    append(userMessage);
+  };
   return (
     <div className="flex flex-col h-full">
       <div className="hidden lg:block px-4 pb-3 border-b border-gray-100">
@@ -111,17 +159,65 @@ function AiAgentChat({ videoId }: { videoId: string }) {
             <input
               className="flex-1 px-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               type="text"
-              placeholder="Enter a question..."
+              placeholder={
+                !isVideoAnalysisEnabled
+                  ? "Upgrade to ask anything about your video"
+                  : "Enter a question..."
+              }
               value={input}
               onChange={handleInputChange}
             />
             <Button
               type="submit"
+              disabled={
+                status === "streaming" ||
+                status === "submitted" ||
+                !isVideoAnalysisEnabled
+              }
               className="px-4 py-2 bg-blue-500 text-white text-sm rounded-full hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed "
             >
-              Send
+              {status === "streaming"
+                ? "AI is replying..."
+                : status === "submitted"
+                  ? "AI is thinkimg..."
+                  : "Send"}
             </Button>
           </form>
+          <div className="flex gap-2">
+            <Button
+              className="flex-2 text-xs text-black xl:text-sm w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={generateScript}
+              type="button"
+              disabled={!isScriptGenerationEnabled}
+            >
+              <LetterText className="w-4 h-4" />
+              {isScriptGenerationEnabled ? (
+                <span>Generate Script</span>
+              ) : (
+                <span>Upgrade to generate a script</span>
+              )}
+            </Button>
+
+            <Button
+              className="flex-2 text-xs text-black xl:text-sm w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={generateTitle}
+              type="button"
+              disabled={!isScriptGenerationEnabled}
+            >
+              <PenIcon className="w-4 h-4" />
+              <span>Generate Title</span>
+            </Button>
+
+            <Button
+              className="flex-2 text-xs text-black xl:text-sm w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={generateImage}
+              type="button"
+              disabled={!isScriptGenerationEnabled}
+            >
+              <ImageIcon className="w-4 h-4" />
+              <span>Generate Image</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
