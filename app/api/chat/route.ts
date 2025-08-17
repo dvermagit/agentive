@@ -5,10 +5,11 @@ import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { getVideoDetails } from "@/actions/getVideoDetails";
 import fetchTranscript from "@/tools/fetchTranscript";
+import { generateImage } from "@/tools/generateImage";
 
 dotenv.config();
 
-const model = google("gemini-1.5-flash-latest");
+const model = google("gemini-2.0-flash-lite");
 export async function POST(req: Request) {
   const { messages, videoId } = await req.json();
   const user = await currentUser();
@@ -30,8 +31,11 @@ export async function POST(req: Request) {
       },
       ...messages,
     ],
-    // tools: { fetchTranscript: fetchTranscript },
-    tools: { fetchTranscript },
+    tools: {
+      fetchTranscript: fetchTranscript,
+      generateImage: generateImage(videoId, user.id),
+    },
+    // tools: { fetchTranscript },
   });
 
   return result.toDataStreamResponse();
