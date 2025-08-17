@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 export const getImages = query({
   args: {
@@ -21,5 +21,47 @@ export const getImages = query({
       }))
     );
     return imageUrls;
+  },
+});
+
+export const generateUploadUrl = mutation(async (ctx) => {
+  return await ctx.storage.generateUploadUrl();
+});
+export const storeImage = mutation({
+  args: {
+    storageId: v.id("_storage"),
+    videoId: v.string(),
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Store the image url in the database
+    const imageId = await ctx.db.insert("images", {
+      storageId: args.storageId,
+      userId: args.userId,
+      videoId: args.videoId,
+    });
+
+    return imageId;
+  },
+});
+
+export const getImage = query({
+  args: {
+    userId: v.string(),
+    videoId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const image = await ctx.db
+      .query("images")
+      .withIndex("by_user_and_video", (q) =>
+        q.eq("userId", args.userId).eq("videoId", args.videoId)
+      )
+      .first();
+
+    if (!image) {
+      return null;
+    }
+
+    return await ctx.storage.getUrl(image.storageId);
   },
 });
