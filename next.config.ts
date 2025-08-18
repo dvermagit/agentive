@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         hostname: "yt3.ggpht.com",
         protocol: "https",
       },
+      {
+        hostname: "elegant-bulldog-250.convex.cloud",
+        protocol: "https",
+      },
     ],
   },
 };
