@@ -4,8 +4,6 @@ import { client } from "@/lib/schematic";
 import { tool } from "ai";
 import z from "zod";
 
-const IMAGE_SIZE = "1792x1024" as const;
-
 export const generateImage = (videoId: string, userId: string) =>
   tool({
     description: "Generate an image",
