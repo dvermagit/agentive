@@ -87,7 +87,7 @@
 //     imageUrl: dbImageUrl,
 //   };
 // };
-
+"use server";
 import { api } from "@/convex/_generated/api";
 import { FeatureFlag, featureFlagEvents } from "@/features/flags";
 import { getConvexClient } from "@/lib/convex";
