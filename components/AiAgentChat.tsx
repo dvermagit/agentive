@@ -5,7 +5,9 @@ import { Button } from "./ui/button";
 import ReactMarkdown from "react-markdown";
 import { useSchematicFlag } from "@schematichq/schematic-react";
 import { FeatureFlag } from "@/features/flags";
-import { ImageIcon, LetterText, PenIcon } from "lucide-react";
+import { BotIcon, ImageIcon, LetterText, PenIcon } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 interface ToolInvocation {
   toolCallId: string;
   toolName: string;
@@ -22,6 +24,9 @@ const formatToolInvocation = (part: ToolPart) => {
   return `🔧 Tool Used: ${part.toolInvocation.toolName}`;
 };
 function AiAgentChat({ videoId }: { videoId: string }) {
+  //Scrolling to bottom logic
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
   const { messages, handleSubmit, handleInputChange, input, append, status } =
     useChat({
       // api: "/api/chat",
@@ -48,6 +53,38 @@ function AiAgentChat({ videoId }: { videoId: string }) {
   );
   const isVideoAnalysisEnabled = useSchematicFlag(FeatureFlag.ANALYSE_VIDEO);
 
+  useEffect(() => {
+    if (bottomRef.current && messageContainerRef.current) {
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
+    }
+  });
+  useEffect(() => {
+    let toastId;
+    switch (status) {
+      case "submitted":
+        toastId = toast("Agent is thinking...", {
+          id: toastId,
+          icon: <BotIcon className="w-4 h-4" />,
+        });
+        break;
+      case "streaming":
+        toastId = toast("Agent is replying...", {
+          id: toastId,
+          icon: <BotIcon className="w-4 h-4" />,
+        });
+        break;
+      case "error":
+        toast.error("Error occurred while getting response from AI Agent", {
+          id: toastId,
+          icon: <BotIcon className="w-4 h-4" />,
+        });
+        break;
+      case "ready":
+        toast.dismiss(toastId);
+        break;
+    }
+  }, [status]);
   const generateScript = async () => {
     const randomId = Math.random().toString(36).substring(2, 9);
 
@@ -66,7 +103,7 @@ function AiAgentChat({ videoId }: { videoId: string }) {
     const userMessage: Message = {
       id: `generate-image-${randomId}`,
       role: "user",
-      content: "Generate a thumbnail  for this video",
+      content: "Generate a thumbnail for this video",
     };
     append(userMessage);
   };
@@ -88,7 +125,10 @@ function AiAgentChat({ videoId }: { videoId: string }) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div
+        className="flex-1 overflow-y-auto px-4 py-4"
+        ref={messageContainerRef}
+      >
         <div className="space-y-6">
           {messages.length === 0 && (
             <div className="flex items-center justify-center h-full min-h-[200px]">
@@ -102,7 +142,6 @@ function AiAgentChat({ videoId }: { videoId: string }) {
               </div>
             </div>
           )}
-
           {messages.map((m) => (
             <div
               key={m.id}
@@ -149,6 +188,7 @@ function AiAgentChat({ videoId }: { videoId: string }) {
               </div>
             </div>
           ))}
+          <div ref={bottomRef} className="h-4" />
         </div>
       </div>
 
@@ -202,7 +242,7 @@ function AiAgentChat({ videoId }: { videoId: string }) {
               className="flex-2 text-xs text-black xl:text-sm w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={generateTitle}
               type="button"
-              disabled={!isScriptGenerationEnabled}
+              disabled={!isTitleGenerationEnabled}
             >
               <PenIcon className="w-4 h-4" />
               <span>Generate Title</span>
@@ -212,7 +252,7 @@ function AiAgentChat({ videoId }: { videoId: string }) {
               className="flex-2 text-xs text-black xl:text-sm w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={generateImage}
               type="button"
-              disabled={!isScriptGenerationEnabled}
+              disabled={!isImageGenerationEnabled}
             >
               <ImageIcon className="w-4 h-4" />
               <span>Generate Image</span>
