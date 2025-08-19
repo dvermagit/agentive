@@ -4,18 +4,21 @@ import Usage from "./Usage";
 import { FeatureFlag } from "@/features/flags";
 import { useSchematicEntitlement } from "@schematichq/schematic-react";
 import { Copy } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
 
 function TitleGeneration({ videoId }: { videoId: string }) {
   const { user } = useUser();
-  const titles: { title: string; _id: string }[] = [];
+  const titles = useQuery(api.titles.list, { videoId, userId: user?.id || "" });
 
-  console.log(user, titles, videoId);
   const { value: isTitleGenerationEnabled } = useSchematicEntitlement(
     FeatureFlag.TITLE_GENERATION
   );
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+    toast.success("Title copied to clipboard");
   };
   return (
     <div className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm ">
