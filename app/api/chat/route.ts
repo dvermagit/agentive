@@ -1,11 +1,14 @@
 import dotenv from "dotenv";
 import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { streamText, tool } from "ai";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { getVideoDetails } from "@/actions/getVideoDetails";
 import fetchTranscript from "@/tools/fetchTranscript";
 import { generateImage } from "@/tools/generateImage";
+import z from "zod";
+import generateTitle from "@/tools/generateTitle";
+import { getVideoIdFromUrl } from "@/lib/getVideoIdFormUrl";
 
 dotenv.config();
 
@@ -33,7 +36,28 @@ export async function POST(req: Request) {
     ],
     tools: {
       fetchTranscript: fetchTranscript,
+      generateTitle: generateTitle,
       generateImage: generateImage(videoId, user.id),
+      getVideoDetails: tool({
+        description: "Get video details of a Youtube video",
+        parameters: z.object({
+          videoId: z.string().describe("The video ID to get the details for"),
+        }),
+        execute: async ({ videoId }) => {
+          const videoDetails = await getVideoDetails(videoId);
+          return { videoDetails };
+        },
+      }),
+      extractVideoId: tool({
+        description: "Extract the video ID from a URL",
+        parameters: z.object({
+          url: z.string().describe("The URL to extract the video ID from"),
+        }),
+        execute: async ({ url }) => {
+          const videoId = await getVideoIdFromUrl(url);
+          return { videoId };
+        },
+      }),
     },
     // tools: { fetchTranscript },
   });
