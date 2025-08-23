@@ -20,3 +20,5 @@ const fetchTranscript = tool({
 });
 
 export default fetchTranscript;
+
+// used zod version 3
