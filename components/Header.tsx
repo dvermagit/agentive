@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 
 function Header() {
   return (
-    <header className="sticky left-0 top-0 right-0 z-50 px-4 md:px-0">
+    <header className="sticky left-0 top-0 right-0 px-4 md:px-0 bg-white/80 backdrop-blur-sm border-b border-gray-200 z-50">
       <div className=" container mx-auto">
         <div className="flex items-center justify-between h-16 ">
           {/* Left section */}
