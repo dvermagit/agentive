@@ -43,7 +43,6 @@ Agentive is an AI-powered platform for analyzing YouTube videos, extracting tran
 ## Project Structure
 
 ```
-
 actions/         # Server actions for video analysis, transcript, title, and image generation
 app/             # Next.js app directory (routes, pages, API endpoints)
 components/      # React components (UI, forms, feature modules)
